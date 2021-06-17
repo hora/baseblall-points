@@ -1,0 +1,57 @@
+<h2>Settings</h2>
+
+<div class="settings">
+  <div class="formula">
+    <label for="batting-formula">Batting Formula</label>
+    <input id="batting-formula" [(ngModel)]="battingFormula">
+  </div>
+
+  <div class="formula">
+    <label for="pitching-formula">Pitching Formula</label>
+    <input id="pitching-formula" [(ngModel)]="pitchingFormula">
+  </div>
+
+  <div class="formula">
+    <label for="season-select">Season</label>
+    <input id="season-select" [(ngModel)]="season">
+  </div>
+</div>
+
+<!--
+<table class="settings stats hitting">
+  <thead>
+    <tr>
+      <th *ngFor="let stat of hittingStats">
+        <abbr title="{{ stat.full | titlecase }}">{{ stat.abbr | uppercase }}</abbr>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td *ngFor="let stat of hittingStats">
+        <input id="{{ stat.abbr }}" [(ngModel)]="stat.default">
+      </td>
+    </tr>
+  </tbody>
+</table>
+-->
+
+<!--
+<table class="settings stats pitching">
+  <thead>
+    <tr>
+      <th *ngFor="let stat of pitchingStats">
+        <abbr title="{{ stat.full | titlecase }}">{{ stat.abbr | uppercase }}</abbr>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td *ngFor="let stat of pitchingStats">
+        <input id="{{ stat.abbr }}" [(ngModel)]="stat.default">
+      </td>
+    </tr>
+  </tbody>
+</table>
+-->
+

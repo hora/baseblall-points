@@ -1,0 +1,23 @@
+<h2>Players</h2>
+
+<table class="players">
+  <thead>
+    <!--just grab hitting for now-->
+    <tr>
+      <th>Links</th>
+      <th>Player</th>
+      <th *ngFor="let statInfo of hittingStatsInfo">
+        <abbr title="{{ statInfo.label }}">
+          {{ statInfo.labelBrief }}
+        </abbr>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let player of players">
+      <td>{{ player.id }}</td>
+      <td>{{ player.name }}</td>
+    </tr>
+  </tbody>
+</table>
