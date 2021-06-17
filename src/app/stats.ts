@@ -2,9 +2,13 @@ export class StatKind {
   public kind: string;
   public stats: Stat[];
 
-  constructor(kind: string, stats: Stat[]) {
+  constructor(kind: string) {
     this.kind = kind;
-    this.stats = stats;
+    this.stats = [];
+  }
+
+  addStat(stat: Stat) {
+    this.stats.push(stat);
   }
 
   getKind() {
