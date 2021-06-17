@@ -8,16 +8,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  //hittingStats = HITTING_STATS;
-  //pitchingStats = PITCHING_STATS;
-
-  battingFormula = '(h + r + rbi + sb + bb - so/2) / pa * 10';
-  pitchingFormula = '((20*qs + so + 15*sho - 0.5*r - 0.5*bb) / (4*ip)) * 10';
-  season = '20';
+  battingFormula = '(H + R + RBI + SB + BB - SO/2) / PA * 10';
+  pitchingFormula = '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10';
+  seasons: number[] = [];
+  selectedSeason = 20;
 
   constructor() { }
 
+  getSeasons() {
+    const min = 1;
+    const max = 19;
+
+    for (let i = min; i <= max; i++) {
+      this.seasons.push(i + 1);
+    }
+  }
+
   ngOnInit(): void {
+    this.getSeasons();
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { PlayerService } from '../player.service';
 import { StatsService } from '../stats.service';
@@ -16,15 +16,16 @@ export class PlayersComponent implements OnInit {
   statsInfo: StatKind[] = [];
   hittingStatsInfo: Stat[] = [];
   pitchingStatsInfo: Stat[] = [];
+  showStatsInfo: Stat[] = [];
+  categoryVisible: string = 'hitting';
 
   constructor(
     private playerService: PlayerService,
     private statsService: StatsService,
-    private changeDetection: ChangeDetectorRef,
   ) { }
 
   getPlayers(): void {
-    this.playerService.getPlayers()
+    this.playerService.getPlayers(this.categoryVisible)
       .subscribe((players) => {
         this.onPlayers(players);
       });
@@ -46,7 +47,22 @@ export class PlayersComponent implements OnInit {
     this.statsInfo = statsInfo;
     this.hittingStatsInfo = statsInfo[0].stats;
     this.pitchingStatsInfo = statsInfo[1].stats;
-    //this.changeDetection.detectChanges();
+    this.setShowStatsInfo();
+  }
+
+  setShowStatsInfo() {
+    if (this.categoryVisible === 'hitting') {
+      this.showStatsInfo = this.hittingStatsInfo;
+    } else if (this.categoryVisible === 'pitching') {
+      this.showStatsInfo = this.pitchingStatsInfo;
+    }
+  }
+
+  showStatsFor(category: string) {
+    this.categoryVisible = category;
+    this.getPlayers();
+
+    this.setShowStatsInfo();
   }
 
   ngOnInit(): void {

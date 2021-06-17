@@ -5,7 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Player } from './player';
 
-const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?group=hitting&type=seasonCombined&season=19';
+const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?type=seasonCombined&season=19';
+//const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?group=hitting&type=seasonCombined&season=19';
 
 //const PLAYERS: Player[] = [
   //{id: 1, name: 'Randy Castillo'},
@@ -24,8 +25,10 @@ export class PlayerService {
 
   constructor(private http: HttpClient) { }
 
-  getPlayers(): Observable<Player[]> {
-    return this.http.get<Player[]>(STATS_URL)
+  getPlayers(category: string): Observable<Player[]> {
+    const url = `${STATS_URL}&group=${category}`;
+
+    return this.http.get<Player[]>(url)
       .pipe(
         map((data: any) => {
           const players: Player[] = [];

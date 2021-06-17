@@ -1,19 +1,26 @@
 <h2>Settings</h2>
 
 <div class="settings">
-  <div class="formula">
+  <div class="formula-wrapper">
     <label for="batting-formula">Batting Formula</label>
-    <input id="batting-formula" [(ngModel)]="battingFormula">
+    <input id="batting-formula" [(ngModel)]="battingFormula"
+    class="formula">
   </div>
 
-  <div class="formula">
+  <div class="formula-wrapper">
     <label for="pitching-formula">Pitching Formula</label>
-    <input id="pitching-formula" [(ngModel)]="pitchingFormula">
+    <input id="pitching-formula" [(ngModel)]="pitchingFormula"
+    class="formula">
   </div>
 
-  <div class="formula">
+  <div class="season-select-wrapper">
     <label for="season-select">Season</label>
-    <input id="season-select" [(ngModel)]="season">
+    <select id="season-select" class="season-select">
+      <option *ngFor="let season of seasons" value="{{ season }}"
+      [selected]="season === selectedSeason">
+        {{ season }}
+      </option>
+    </select>
   </div>
 </div>
 

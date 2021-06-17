@@ -1,17 +1,20 @@
-<h2>Players</h2>
+<h2 class="showing-{{ categoryVisible }}">
+  <a href="#" (click)="showStatsFor('hitting')" class="hitting">🏏 Batters</a>
+  <a href="#" (click)="showStatsFor('pitching')" class="pitching">⚾ Pitchers</a>
+</h2>
 
 <div class="table-wrapper">
 <table class="players">
   <colgroup class="colgroup-links"></colgroup>
   <colgroup class="colgroup-player"></colgroup>
-  <colgroup *ngFor="let statInfo of hittingStatsInfo">
+  <colgroup *ngFor="let statInfo of showStatsInfo">
   </colgroup>
   <thead>
     <!--just grab hitting for now-->
     <tr>
       <th>Links</th>
       <th>Player</th>
-      <th *ngFor="let statInfo of hittingStatsInfo">
+      <th *ngFor="let statInfo of showStatsInfo">
         <abbr title="{{ statInfo.label }}">
           {{ statInfo.labelBrief }}
         </abbr>
@@ -31,7 +34,7 @@
         </ul>
       </td>
       <td>{{ player.name }}</td>
-      <td *ngFor="let statInfo of hittingStatsInfo">
+      <td *ngFor="let statInfo of showStatsInfo">
         {{ player.getStat(statInfo.dataField) }}
       </td>
     </tr>
