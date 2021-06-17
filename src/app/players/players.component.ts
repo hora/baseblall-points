@@ -25,13 +25,20 @@ export class PlayersComponent implements OnInit {
 
   getPlayers(): void {
     this.playerService.getPlayers()
-      .subscribe(players => this.players = players);
+      .subscribe((players) => {
+        this.onPlayers(players);
+      });
   }
 
   getStatsInfo(): void {
     this.statsService.getStatsInfo().subscribe((statsInfo) => {
       this.onStatsInfo(statsInfo);
     });
+  }
+
+  onPlayers(players: Player[]): void {
+    console.debug('Loaded Players:', players);
+    this.players = players;
   }
 
   onStatsInfo(statsInfo: StatKind[]): void {

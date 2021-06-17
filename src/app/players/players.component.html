@@ -1,6 +1,11 @@
 <h2>Players</h2>
 
+<div class="table-wrapper">
 <table class="players">
+  <colgroup class="colgroup-links"></colgroup>
+  <colgroup class="colgroup-player"></colgroup>
+  <colgroup *ngFor="let statInfo of hittingStatsInfo">
+  </colgroup>
   <thead>
     <!--just grab hitting for now-->
     <tr>
@@ -16,8 +21,20 @@
 
   <tbody>
     <tr *ngFor="let player of players">
-      <td>{{ player.id }}</td>
+      <td>
+        <ul class="player-links">
+          <li><a target="_blank" href="{{ player.getBlaseballLink() }}">⚾</a></li>
+          <li><a target="_blank" href="{{ player.getWikiLink() }}">📜</a></li>
+          <li><a target="_blank" href="{{ player.getViewerLink() }}"></a>🔍</li>
+          <li><a target="_blank" href="{{ player.getAstrologyLink() }}">🌛</a></li>
+          <li><a target="_blank" href="{{ player.getChangesLink() }}">🦋</a></li>
+        </ul>
+      </td>
       <td>{{ player.name }}</td>
+      <td *ngFor="let statInfo of hittingStatsInfo">
+        {{ player.getStat(statInfo.dataField) }}
+      </td>
     </tr>
   </tbody>
 </table>
+</div>
