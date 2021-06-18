@@ -62,6 +62,7 @@ export class Player {
 
   getPoints(formula: { [key: string]: any }, stats: Stat[]) : number {
     const statVars: { [key: string]: any } = {};
+    let ret: any = 0;
 
     for (let stat of stats) {
       statVars[stat.labelBrief.toLowerCase()] = {
@@ -74,7 +75,13 @@ export class Player {
       variables: (statVars as VariableLookup),
     });
 
-    return eq.value?.toFixed(2) || 0;
+    ret = eq.value?.toFixed(2);
+
+    if (ret) {
+      ret = Number(ret);
+    }
+
+    return ret;
   }
 
 }
