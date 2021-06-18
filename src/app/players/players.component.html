@@ -13,12 +13,13 @@
     <!--just grab hitting for now-->
     <tr>
       <th>Links</th>
-      <th>Player</th>
+      <th (click)="setSortColumn('name')">Player</th>
       <th>Team</th>
       <th>🌟</th>
-      <th>Points</th>
+      <th (click)="setSortColumn('points')">Points</th>
       <th>P / 🌟</th>
-      <th *ngFor="let statInfo of showStatsInfo">
+      <th *ngFor="let statInfo of showStatsInfo"
+            (click)="setSortColumn(statInfo.dataField)">
         <abbr title="{{ statInfo.label }}">
           {{ statInfo.labelBrief }}
         </abbr>

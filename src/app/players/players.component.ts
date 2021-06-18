@@ -29,6 +29,9 @@ export class PlayersComponent implements OnInit {
 
   selectedSeason: number = -1;
 
+  sortColumn: string = 'points';
+  sortDirection: string = 'desc';
+
   settingsObservable = new Observable<any>();
 
   constructor(
@@ -73,6 +76,7 @@ export class PlayersComponent implements OnInit {
   onPlayers(players: Player[]): void {
     console.debug('Loaded Players:', players);
     this.players = players;
+    this.sortPlayers();
   }
 
   setShowStatsInfo() {
@@ -108,6 +112,56 @@ export class PlayersComponent implements OnInit {
     }
 
     return [];
+  }
+
+  sortPlayers() {
+    this.players.sort((a: Player, b: Player) => {
+      let aVal: any = 0;
+      let bVal: any = 0;
+
+      switch (this.sortColumn) {
+        case 'name':
+          aVal = a.name;
+          bVal = b.name;
+          break;
+
+        case 'points':
+          aVal = a.getPoints(this.getFormula(this.categoryVisible),
+        this.getStats(this.categoryVisible));
+          bVal = b.getPoints(this.getFormula(this.categoryVisible),
+        this.getStats(this.categoryVisible));
+          break;
+
+        default:
+          aVal = a.getStat(this.sortColumn);
+          bVal = b.getStat(this.sortColumn);
+          break;
+      }
+
+      if (aVal < bVal) {
+        return (this.sortDirection === 'desc') ? 1 : -1;
+      }
+      if (aVal > bVal) {
+        return (this.sortDirection === 'desc') ? -1 : 1;
+      }
+
+      return 0;
+    });
+  }
+
+  setSortColumn(col: string) {
+    if (col === this.sortColumn) {
+      if (this.sortDirection === 'desc') {
+        this.sortDirection = 'asc';
+      } else {
+        this.sortDirection = 'desc';
+      }
+    } else {
+      this.sortColumn = col;
+      this.sortDirection = 'desc';
+    }
+
+    this.sortPlayers();
   }
 
   ngOnInit() { }
