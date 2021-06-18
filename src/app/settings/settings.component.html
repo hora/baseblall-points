@@ -4,18 +4,19 @@
   <div class="formula-wrapper">
     <label for="batting-formula">Batting Formula</label>
     <input id="batting-formula" [(ngModel)]="battingFormula"
-    class="formula">
+    class="formula" (change)="onFormulaChange('hitting', $event.target)">
   </div>
 
   <div class="formula-wrapper">
     <label for="pitching-formula">Pitching Formula</label>
     <input id="pitching-formula" [(ngModel)]="pitchingFormula"
-    class="formula">
+    class="formula" (change)="onFormulaChange('pitching', $event.target)">
   </div>
 
   <div class="season-select-wrapper">
     <label for="season-select">Season</label>
-    <select id="season-select" class="season-select">
+    <select id="season-select" class="season-select"
+      (change)="onSeasonSelect($event.target)">
       <option *ngFor="let season of seasons" value="{{ season }}"
       [selected]="season === selectedSeason">
         {{ season }}

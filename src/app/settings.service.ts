@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as equationParser from 'equation-parser';
@@ -12,6 +12,19 @@ export interface Config {
   seasons: number[];
 }
 
+export interface Settings {
+  battingFormula: string;
+  parsedBattingFormula: { [key: string]: any };
+  pitchingFormula: string;
+  parsedPitchingFormula: { [key: string]: any };
+  seasons: number[];
+  selectedSeason: number;
+  hittingStatsInfo: Stat[];
+  pitchingStatsInfo: Stat[];
+  activeHittingStatsInfo: Stat[];
+  activePitchingStatsInfo: Stat[];
+}
+
 const CONFIG_URL = 'https://api.sibr.dev/datablase/v2/config';
 
 @Injectable({
@@ -19,20 +32,24 @@ const CONFIG_URL = 'https://api.sibr.dev/datablase/v2/config';
 })
 export class SettingsService {
 
-  battingFormula = '(H + R + RBI + SB + BB - SO/2) / PA * 10';
-  parsedBattingFormula: { [key: string]: any } = {};
+  private settings = {
+    battingFormula: '(H + R + RBI + SB + BB - SO/2) / PA * 10',
+    parsedBattingFormula: {},
 
-  pitchingFormula = '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10';
-  parsedPitchingFormula: { [key: string]: any } = {};
+    pitchingFormula: '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10',
+    parsedPitchingFormula: {},
 
-  seasons: number[] = [];
-  selectedSeason = 20;
+    seasons: [],
+    selectedSeason: 20,
 
-  hittingStatsInfo: Stat[] = [];
-  pitchingStatsInfo: Stat[] = [];
+    hittingStatsInfo: [],
+    pitchingStatsInfo: [],
 
-  activeHittingStatsInfo: Stat[] = [];
-  activePitchingStatsInfo: Stat[] = [];
+    activeHittingStatsInfo: [],
+    activePitchingStatsInfo: [],
+  } as Settings;
+
+  subject = new Subject<any>();
 
   public ready: Promise<boolean>;
 
@@ -48,14 +65,16 @@ export class SettingsService {
         console.debug('Settings: loaded config', config);
 
         this.setSeasons(config.seasons[0], config.seasons[1]);
-        this.hittingStatsInfo = config.statsInfo[0].stats;
-        this.pitchingStatsInfo = config.statsInfo[1].stats;
+        this.settings.hittingStatsInfo = config.statsInfo[0].stats;
+        this.settings.pitchingStatsInfo = config.statsInfo[1].stats;
         this.parseStats();
         this.parseFormulas();
 
-        console.debug('Settings initialized');
+        this.sendSettings();
 
         resolve(true);
+        console.debug('Settings initialized');
+
       });
     });
   }
@@ -72,6 +91,10 @@ export class SettingsService {
             hitting.addStat(stat);
           }
 
+          // for some reason plate appearances don't show up in config
+          const pa = new Stat('plateAppearances', 'Plate Appearances', 'PA', 'plate_appearances', '');
+          hitting.addStat(pa);
+
           for (let s of data.columns.pitching) {
             const stat = new Stat(s.id, s.label, s.labelBrief, s.dataField, s.description);
             pitching.addStat(stat);
@@ -86,66 +109,63 @@ export class SettingsService {
   }
 
   parseStats() {
-    const batting: string[] = this.battingFormula.match(/[A-Za-z]+/g) || [];
-    const pitching: string[] = this.pitchingFormula.match(/[A-Za-z]+/g) || [];
+    const batting: string[] = this.settings.battingFormula.match(/[A-Za-z]+/g) || [];
+    const pitching: string[] = this.settings.pitchingFormula.match(/[A-Za-z]+/g) || [];
 
+    this.settings.activeHittingStatsInfo = [];
     for (let stat of batting) {
-      for (let hittingStat of this.hittingStatsInfo) {
+      for (let hittingStat of this.settings.hittingStatsInfo) {
         if (hittingStat.labelBrief === stat) {
-          this.activeHittingStatsInfo.push(hittingStat);
+          this.settings.activeHittingStatsInfo.push(hittingStat);
         }
       }
     }
 
+    this.settings.activePitchingStatsInfo = [];
     for (let stat of pitching) {
-      for (let pitchingStat of this.pitchingStatsInfo) {
+      for (let pitchingStat of this.settings.pitchingStatsInfo) {
         if (pitchingStat.labelBrief === stat) {
-          this.activePitchingStatsInfo.push(pitchingStat);
+          this.settings.activePitchingStatsInfo.push(pitchingStat);
         }
       }
     }
   }
 
   parseFormulas() {
-    this.parsedBattingFormula = equationParser.parse(this.battingFormula);
-    console.log('Parsed batting formula:', this.parsedBattingFormula);
+    this.settings.parsedBattingFormula = equationParser.parse(this.settings.battingFormula);
+    console.log('Parsed batting formula:', this.settings.parsedBattingFormula);
 
-    this.parsedPitchingFormula = equationParser.parse(this.pitchingFormula);
-    console.log('Parsed pitching formula:', this.parsedPitchingFormula);
+    this.settings.parsedPitchingFormula = equationParser.parse(this.settings.pitchingFormula);
+    console.log('Parsed pitching formula:', this.settings.parsedPitchingFormula);
   }
 
   setSeasons(min: number, max: number) {
     for (let i = min; i <= max; i++) {
-      this.seasons.push(i + 1);
+      this.settings.seasons.push(i + 1);
     }
   }
 
-  getActiveStats(): StatKind[] {
-    const hitting = new StatKind('hitting');
-    hitting.setStats(this.activeHittingStatsInfo);
-
-    const pitching = new StatKind('pitching');
-    pitching.setStats(this.activePitchingStatsInfo);
-
-    return [hitting, pitching];
+  setSelectedSeason(selectedSeason: number) {
+    this.settings.selectedSeason = selectedSeason;
+    this.sendSettings();
   }
 
-  getRawFormula(category: string): string {
-    if (category === 'hitting') {
-      return this.battingFormula;
-    } else if (category === 'pitching') {
-      return this.pitchingFormula;
-    }
-
-    return '';
+  setFormula(category: string, formula: string) {
+      if (category === 'hitting') {
+        this.settings.battingFormula = formula;
+      } else if (category === 'pitching') {
+        this.settings.pitchingFormula = formula;
+      }
+      this.parseStats();
+      this.sendSettings();
   }
 
-  getSeasons(): number[] {
-    return this.seasons;
+  sendSettings() {
+    this.subject.next(this.settings);
   }
 
-  getSelectedSeason(): number {
-    return this.selectedSeason;
+  getObservable() {
+    return this.subject.asObservable();
   }
 
 }

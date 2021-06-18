@@ -5,16 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Player } from './player';
 
-const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?type=seasonCombined&season=19';
-//const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?group=hitting&type=seasonCombined&season=19';
-
-//const PLAYERS: Player[] = [
-  //{id: 1, name: 'Randy Castillo'},
-  //{id: 2, name: 'Chorby Short'},
-  //{id: 3, name: 'Dudley Mueller'},
-  //{id: 4, name: 'Slosh Truk'},
-  //{id: 5, name: 'Dunlap Figueroa'},
-//];
+const STATS_URL = 'https://api.sibr.dev/datablase/v2/stats?type=seasonCombined';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +16,8 @@ export class PlayerService {
 
   constructor(private http: HttpClient) { }
 
-  getPlayers(category: string): Observable<Player[]> {
-    const url = `${STATS_URL}&group=${category}`;
+  getPlayers(category: string, season: number): Observable<Player[]> {
+    const url = `${STATS_URL}&group=${category}&season=${season - 1}`;
 
     return this.http.get<Player[]>(url)
       .pipe(

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 
 import { PlayerService } from '../player.service';
-import { StatsService } from '../stats.service';
-import { SettingsService } from '../settings.service';
+import { SettingsService, Settings } from '../settings.service';
 import { Player } from '../player';
 import { StatKind, Stat } from '../stats';
 
@@ -14,30 +14,39 @@ import { StatKind, Stat } from '../stats';
 export class PlayersComponent implements OnInit {
 
   players: Player[] = [];
-  statsInfo: StatKind[] = [];
   hittingStatsInfo: Stat[] = [];
   pitchingStatsInfo: Stat[] = [];
   showStatsInfo: Stat[] = [];
+  selectedSeason: number = -1;
   categoryVisible: string = 'hitting';
+  settingsObservable = new Observable<any>();
 
   constructor(
     private playerService: PlayerService,
-    private statsService: StatsService,
     private settingsService: SettingsService,
-  ) { }
+  ) {
+    this.settingsObservable = this.settingsService.getObservable();
+
+    this.settingsObservable.subscribe((settings: Settings) => {
+      console.debug('Players updating settings');
+
+      this.hittingStatsInfo = settings.activeHittingStatsInfo;
+      this.pitchingStatsInfo = settings.activePitchingStatsInfo;
+      this.selectedSeason = settings.selectedSeason;
+      this.getPlayers();
+      this.setShowStatsInfo();
+
+      console.debug('Active hitting stats set', settings.activeHittingStatsInfo);
+      console.debug('Active pitching stats set', settings.activePitchingStatsInfo);
+    });
+  }
 
   getPlayers(): void {
-    this.playerService.getPlayers(this.categoryVisible)
+    this.playerService
+    .getPlayers(this.categoryVisible, this.selectedSeason)
       .subscribe((players) => {
         this.onPlayers(players);
       });
-  }
-
-  getActiveStats(): void {
-    this.statsInfo = this.settingsService.getActiveStats();
-    this.hittingStatsInfo = this.statsInfo[0].stats;
-    this.pitchingStatsInfo = this.statsInfo[1].stats;
-    this.setShowStatsInfo();
   }
 
   onPlayers(players: Player[]): void {
@@ -60,9 +69,6 @@ export class PlayersComponent implements OnInit {
     this.setShowStatsInfo();
   }
 
-  ngOnInit(): void {
-    this.getActiveStats();
-    this.getPlayers();
-  }
+  async ngOnInit() { }
 
 }
