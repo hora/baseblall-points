@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-//import { HITTING_STATS, PITCHING_STATS } from '../stats';
+
+import { SettingsService, Config } from '../settings.service';
+import { StatKind, Stat } from '../stats';
 
 @Component({
   selector: 'app-settings',
@@ -8,24 +10,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  battingFormula = '(H + R + RBI + SB + BB - SO/2) / PA * 10';
-  pitchingFormula = '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10';
+  battingFormula: string = '';
+  pitchingFormula: string = '';
   seasons: number[] = [];
-  selectedSeason = 20;
+  selectedSeason: number = -1;
 
-  constructor() { }
+  constructor(
+    private settingsService: SettingsService,
+  ) { }
 
-  getSeasons() {
-    const min = 1;
-    const max = 19;
+  async ngOnInit() {
+    await this.settingsService.ready;
 
-    for (let i = min; i <= max; i++) {
-      this.seasons.push(i + 1);
-    }
-  }
+    this.battingFormula = this.settingsService.getRawFormula('hitting');
+    this.pitchingFormula = this.settingsService.getRawFormula('pitching');
 
-  ngOnInit(): void {
-    this.getSeasons();
+    this.seasons = this.settingsService.getSeasons();
+    this.selectedSeason = this.settingsService.getSelectedSeason();
   }
 
 }

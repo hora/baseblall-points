@@ -11,6 +11,10 @@ export class StatKind {
     this.stats.push(stat);
   }
 
+  setStats(stats: Stat[]) {
+    this.stats = stats;
+  }
+
   getKind() {
     return this.kind;
   }

@@ -14,17 +14,7 @@ export class StatsService {
 
   constructor(private http: HttpClient) { }
 
-  //getMockStatKinds(): StatKind[] {
-    //const wins = new Stat('wins', 'Wins', 'W', 'wins', '');
-    //const pitching = new StatKind('pitching', [wins]);
-
-    //const gp = new Stat('gamesPlayed', 'Games Played', 'G', 'games_played', '');
-    //const atBats = new Stat('atBats', 'At Bats', 'AB', 'at_bats', '');
-    //const hitting = new StatKind('hitting', [gp, atBats]);
-
-    //return [hitting, pitching];
-  //}
-
+  // todo: remove this once it's all in settings
   getStatsInfo(): Observable<StatKind[]> {
     return this.http.get<StatKind[]>(CONFIG_URL)
       .pipe(

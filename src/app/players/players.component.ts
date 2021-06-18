@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { PlayerService } from '../player.service';
 import { StatsService } from '../stats.service';
+import { SettingsService } from '../settings.service';
 import { Player } from '../player';
 import { StatKind, Stat } from '../stats';
 
@@ -22,6 +23,7 @@ export class PlayersComponent implements OnInit {
   constructor(
     private playerService: PlayerService,
     private statsService: StatsService,
+    private settingsService: SettingsService,
   ) { }
 
   getPlayers(): void {
@@ -31,23 +33,16 @@ export class PlayersComponent implements OnInit {
       });
   }
 
-  getStatsInfo(): void {
-    this.statsService.getStatsInfo().subscribe((statsInfo) => {
-      this.onStatsInfo(statsInfo);
-    });
+  getActiveStats(): void {
+    this.statsInfo = this.settingsService.getActiveStats();
+    this.hittingStatsInfo = this.statsInfo[0].stats;
+    this.pitchingStatsInfo = this.statsInfo[1].stats;
+    this.setShowStatsInfo();
   }
 
   onPlayers(players: Player[]): void {
     console.debug('Loaded Players:', players);
     this.players = players;
-  }
-
-  onStatsInfo(statsInfo: StatKind[]): void {
-    console.debug('Loaded StatsInfo:', statsInfo);
-    this.statsInfo = statsInfo;
-    this.hittingStatsInfo = statsInfo[0].stats;
-    this.pitchingStatsInfo = statsInfo[1].stats;
-    this.setShowStatsInfo();
   }
 
   setShowStatsInfo() {
@@ -66,7 +61,7 @@ export class PlayersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getStatsInfo();
+    this.getActiveStats();
     this.getPlayers();
   }
 
