@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import * as equationParser from 'equation-parser';
 
 import { PlayerService } from '../player.service';
 import { SettingsService, Settings } from '../settings.service';
@@ -14,11 +15,20 @@ import { StatKind, Stat } from '../stats';
 export class PlayersComponent implements OnInit {
 
   players: Player[] = [];
+
   hittingStatsInfo: Stat[] = [];
   pitchingStatsInfo: Stat[] = [];
+
+  activeHittingStatsInfo: Stat[] = [];
+  activePitchingStatsInfo: Stat[] = [];
   showStatsInfo: Stat[] = [];
-  selectedSeason: number = -1;
   categoryVisible: string = 'hitting';
+
+  parsedBattingFormula: { [key: string]: any } = {};
+  parsedPitchingFormula: { [key: string]: any } = {};
+
+  selectedSeason: number = -1;
+
   settingsObservable = new Observable<any>();
 
   constructor(
@@ -30,10 +40,21 @@ export class PlayersComponent implements OnInit {
     this.settingsObservable.subscribe((settings: Settings) => {
       console.debug('Players updating settings');
 
-      this.hittingStatsInfo = settings.activeHittingStatsInfo;
-      this.pitchingStatsInfo = settings.activePitchingStatsInfo;
+      this.hittingStatsInfo = settings.hittingStatsInfo;
+      this.pitchingStatsInfo = settings.pitchingStatsInfo;
+
+      this.activeHittingStatsInfo = settings.activeHittingStatsInfo;
+      this.activePitchingStatsInfo = settings.activePitchingStatsInfo;
+
       this.selectedSeason = settings.selectedSeason;
       this.getPlayers();
+
+      this.parsedBattingFormula = equationParser.parse(settings.battingFormula.toLowerCase());
+      console.log('Parsed batting formula:', this.parsedBattingFormula);
+
+      this.parsedPitchingFormula = equationParser.parse(settings.pitchingFormula.toLowerCase());
+      console.log('Parsed pitching formula:', this.parsedPitchingFormula);
+
       this.setShowStatsInfo();
 
       console.debug('Active hitting stats set', settings.activeHittingStatsInfo);
@@ -56,9 +77,9 @@ export class PlayersComponent implements OnInit {
 
   setShowStatsInfo() {
     if (this.categoryVisible === 'hitting') {
-      this.showStatsInfo = this.hittingStatsInfo;
+      this.showStatsInfo = this.activeHittingStatsInfo;
     } else if (this.categoryVisible === 'pitching') {
-      this.showStatsInfo = this.pitchingStatsInfo;
+      this.showStatsInfo = this.activePitchingStatsInfo;
     }
   }
 
@@ -69,6 +90,26 @@ export class PlayersComponent implements OnInit {
     this.setShowStatsInfo();
   }
 
-  async ngOnInit() { }
+  getFormula(category: string): { [key: string]: any} {
+    if (category === 'hitting') {
+      return this.parsedBattingFormula;
+    } else if (category === 'pitching') {
+      return this.parsedPitchingFormula;
+    }
+
+    return {};
+  }
+
+  getStats(category: string): Stat[] {
+    if (category === 'hitting') {
+      return this.hittingStatsInfo;
+    } else if (category === 'pitching') {
+      return this.pitchingStatsInfo;
+    }
+
+    return [];
+  }
+
+  ngOnInit() { }
 
 }

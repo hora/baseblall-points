@@ -1,3 +1,8 @@
+import { resolve, VariableLookup } from 'equation-resolver';
+import { EquationNode } from 'equation-parser';
+
+import { Stat } from './stats';
+
 export class Player {
   public id: number;
   public name: string;
@@ -53,6 +58,23 @@ export class Player {
     }
 
     return link;
+  }
+
+  getPoints(formula: { [key: string]: any }, stats: Stat[]) : number {
+    const statVars: { [key: string]: any } = {};
+
+    for (let stat of stats) {
+      statVars[stat.labelBrief.toLowerCase()] = {
+        type: 'number',
+        value: this.getStat(stat.dataField),
+      };
+    }
+
+    const eq: any = resolve((formula as EquationNode), {
+      variables: (statVars as VariableLookup),
+    });
+
+    return eq.value?.toFixed(2) || 0;
   }
 
 }

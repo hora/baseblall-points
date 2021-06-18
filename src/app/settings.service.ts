@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import * as equationParser from 'equation-parser';
-import * as equationResolver from 'equation-resolver';
 
 import { StatKind, Stat } from './stats';
 
@@ -14,9 +12,7 @@ export interface Config {
 
 export interface Settings {
   battingFormula: string;
-  parsedBattingFormula: { [key: string]: any };
   pitchingFormula: string;
-  parsedPitchingFormula: { [key: string]: any };
   seasons: number[];
   selectedSeason: number;
   hittingStatsInfo: Stat[];
@@ -34,10 +30,7 @@ export class SettingsService {
 
   private settings = {
     battingFormula: '(H + R + RBI + SB + BB - SO/2) / PA * 10',
-    parsedBattingFormula: {},
-
     pitchingFormula: '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10',
-    parsedPitchingFormula: {},
 
     seasons: [],
     selectedSeason: 20,
@@ -68,13 +61,11 @@ export class SettingsService {
         this.settings.hittingStatsInfo = config.statsInfo[0].stats;
         this.settings.pitchingStatsInfo = config.statsInfo[1].stats;
         this.parseStats();
-        this.parseFormulas();
 
         this.sendSettings();
 
         resolve(true);
         console.debug('Settings initialized');
-
       });
     });
   }
@@ -129,14 +120,6 @@ export class SettingsService {
         }
       }
     }
-  }
-
-  parseFormulas() {
-    this.settings.parsedBattingFormula = equationParser.parse(this.settings.battingFormula);
-    console.log('Parsed batting formula:', this.settings.parsedBattingFormula);
-
-    this.settings.parsedPitchingFormula = equationParser.parse(this.settings.pitchingFormula);
-    console.log('Parsed pitching formula:', this.settings.parsedPitchingFormula);
   }
 
   setSeasons(min: number, max: number) {

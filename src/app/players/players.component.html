@@ -14,6 +14,10 @@
     <tr>
       <th>Links</th>
       <th>Player</th>
+      <th>Team</th>
+      <th>🌟</th>
+      <th>Points</th>
+      <th>P / 🌟</th>
       <th *ngFor="let statInfo of showStatsInfo">
         <abbr title="{{ statInfo.label }}">
           {{ statInfo.labelBrief }}
@@ -34,6 +38,11 @@
         </ul>
       </td>
       <td>{{ player.name }}</td>
+      <td>.</td>
+      <td>.</td>
+      <td>{{ player.getPoints(getFormula(categoryVisible),
+        getStats(categoryVisible)) }}</td>
+      <td>.</td>
       <td *ngFor="let statInfo of showStatsInfo">
         {{ player.getStat(statInfo.dataField) }}
       </td>
