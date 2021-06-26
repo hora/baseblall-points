@@ -14,10 +14,10 @@
     <tr>
       <th>Links</th>
       <th (click)="setSortColumn('name')">Player</th>
-      <th>Team</th>
-      <th>🌟</th>
+      <th (click)="setSortColumn('team')">Team</th>
+      <th (click)="setSortColumn('stars')">🌟</th>
       <th (click)="setSortColumn('points')">Points</th>
-      <th>P / 🌟</th>
+      <th (click)="setSortColumn('pps')">P / 🌟</th>
       <th *ngFor="let statInfo of showStatsInfo"
             (click)="setSortColumn(statInfo.dataField)">
         <abbr title="{{ statInfo.label }}">
@@ -39,11 +39,12 @@
         </ul>
       </td>
       <td>{{ player.name }}</td>
-      <td>.</td>
-      <td>.</td>
+      <td>{{ player.team }}</td>
+      <td>{{ player.stars }}</td>
       <td>{{ player.getPoints(getFormula(categoryVisible),
         getStats(categoryVisible)) }}</td>
-      <td>.</td>
+      <td>{{ player.getPPS(getFormula(categoryVisible),
+        getStats(categoryVisible)) }}</td>
       <td *ngFor="let statInfo of showStatsInfo">
         {{ player.getStat(statInfo.dataField) }}
       </td>
