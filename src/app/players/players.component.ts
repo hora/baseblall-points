@@ -125,6 +125,23 @@ export class PlayersComponent implements OnInit {
           bVal = b.name;
           break;
 
+        case 'team':
+          aVal = a.team;
+          bVal = b.team;
+          break;
+
+        case 'stars':
+          aVal = a.stars;
+          bVal = b.stars;
+          break;
+
+        case 'pps':
+          aVal = a.getPPS(this.getFormula(this.categoryVisible),
+        this.getStats(this.categoryVisible));
+          bVal = b.getPPS(this.getFormula(this.categoryVisible),
+        this.getStats(this.categoryVisible));
+          break;
+
         case 'points':
           aVal = a.getPoints(this.getFormula(this.categoryVisible),
         this.getStats(this.categoryVisible));

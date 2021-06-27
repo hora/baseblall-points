@@ -33,7 +33,7 @@ export class SettingsService {
     pitchingFormula: '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10',
 
     seasons: [],
-    selectedSeason: 20,
+    selectedSeason: -1,
 
     hittingStatsInfo: [],
     pitchingStatsInfo: [],
@@ -126,6 +126,8 @@ export class SettingsService {
     for (let i = min; i <= max; i++) {
       this.settings.seasons.push(i + 1);
     }
+
+    this.settings.selectedSeason = max + 1;
   }
 
   setSelectedSeason(selectedSeason: number) {
