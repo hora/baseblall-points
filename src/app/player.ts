@@ -3,11 +3,70 @@ import { EquationNode } from 'equation-parser';
 
 import { Stat } from './stats';
 
+interface Abbrs {
+  string: string
+}
+
+const playerViewerAbbrs: { [index:string]: string } = {
+  'KCBM': 'KCBM',
+  'CRAB': 'BALC',
+  'DALE': 'MIA',
+  'CHI': 'CHIF',
+  'BOS': 'BOF',
+  'FRI': 'HF',
+  'SEA': 'SEA',
+  'ATL': 'ATL',
+  'JAZZ': 'BJAZ',
+  'LIFT': 'TKL',
+  'LVRS': 'SFL',
+  'YELL': 'YELL',
+  'CORE': 'CORE',
+  'NYM': 'NYMI',
+  'CAN': 'CAN',
+  'PIES': 'PHIL',
+  'CHST': 'CHST',
+  'SPY': 'HOU',
+  'STK': 'DAL',
+  'HELL': 'SUN',
+  'TACO': 'LATA',
+  'TGRS': 'HAT',
+  'CDMX': 'MCWW',
+  'OHWO': 'OHWO',
+};
+
+const astroAbbrs: { [index:string]: string } = {
+  'KCBM': 'kansas-city-breath-mints',
+  'CRAB': 'baltimore-crabs',
+  'DALE': 'miami-dale',
+  'CHI': 'chicago-firefighters',
+  'BOS': 'boston-flowers',
+  'FRI': 'hawaii-fridays',
+  'SEA': 'seattle-garages',
+  'ATL': 'atlantis-georgias',
+  'JAZZ': 'breckenridge-jazz-hands',
+  'LIFT': 'tokyo-lift',
+  'LVRS': 'san-francisco-lovers',
+  'YELL': 'yellowstone-magic',
+  'CORE': 'core-mechanics',
+  'NYM': 'new-york-millennials',
+  'CAN': 'canada-moist-talkers',
+  'PIES': 'philly-pies',
+  'CHST': 'charleston-shoe-thieves',
+  'SPY': 'houston-spies',
+  'STK': 'dallas-steaks',
+  'HELL': 'hellmouth-sunbeams',
+  'TACO': 'la-unlimited-tacos',
+  'TGRS': 'hades-tigers',
+  'CDMX': 'mexico-city-wild-wings',
+  'OHWO': 'ohio-worms',
+};
+
 export class Player {
   public id: number;
   public name: string;
   public stats: { [key: string]: any};
   public team: string;
+  public teamAbbr: string;
   public bStars: number;
   public rStars: number;
   public dStars: number;
@@ -19,6 +78,7 @@ export class Player {
     this.name = name;
     this.stats = {};
     this.team = '';
+    this.teamAbbr = '';
     this.bStars = 0;
     this.rStars = 0;
     this.dStars = 0;
@@ -26,8 +86,9 @@ export class Player {
     this.stars = 0;
   }
 
-  setTeam(team: string) {
+  setTeam(team: string, teamAbbr: string) {
     this.team = team || 'Null';
+    this.teamAbbr = teamAbbr || '';
   }
 
   setStars(p: { [key: string]: any }) {
@@ -112,12 +173,12 @@ export class Player {
 
   // requires knowing their current team
   getViewerLink() {
-    return '#';
+    return `https://blaseballplayers.netlify.app/team/${playerViewerAbbrs[this.teamAbbr]}`;
   }
 
   // requires knowing their current team
   getAstrologyLink() {
-    return '#';
+    return `https://teagrrl.github.io/astrology/astrology/#${astroAbbrs[this.teamAbbr]}`;
   }
 
   getChangesLink() {

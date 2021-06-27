@@ -41,7 +41,7 @@ export class PlayerService {
         for (let p of playersData) {
           const player = new Player(p.player_id, p.player_name);
 
-          player.setTeam(p.team);
+          player.setTeam(p.team, p.team_abbreviation);
           player.setStars(p);
 
           playersById[player.id] = player;
