@@ -29,8 +29,14 @@ const CONFIG_URL = 'https://api.sibr.dev/datablase/v2/config';
 export class SettingsService {
 
   private settings = {
-    battingFormula: '(H + R + RBI + SB + BB - SO/2) / PA * 10',
-    pitchingFormula: '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10',
+    preS23battingFormula: '(H + R + RBI + SB + BB - SO/2) / PA * 10',
+    preS23pitchingFormula: '((20*QS + SO + 15*SHO - 0.5*R - 0.5*BB) / (4*IP)) * 10',
+
+    s23battingFormula: '10 * (H + TB/2 + SB + BB - SO/2) / PA',
+    s23pitchingFormula: '10 * (20*QS + SO + 15*SHO - HR - BB) / 4*IP',
+
+    battingFormula: '10 * (H + TB/2 + SB + BB - SO/2) / PA',
+    pitchingFormula: '10 * (20*QS + SO + 15*SHO - HR - BB) / 4*IP',
 
     seasons: [],
     selectedSeason: -1,
