@@ -36,7 +36,7 @@ export class SettingsService {
     s23pitchingFormula: '10 * (20*QS + SO + 15*SHO - HR - BB) / 4*IP',
 
     battingFormula: '10 * (H + TB/2 + SB + BB - SO/2) / PA',
-    pitchingFormula: '10 * (20*QS + SO + 15*SHO - HR - BB) / 4*IP',
+    pitchingFormula: '10 * ((20*QS + SO + 15*SHO - HR - BB) / (4*IP))',
 
     seasons: [],
     selectedSeason: -1,
