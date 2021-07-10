@@ -39,18 +39,23 @@ export class PlayerService {
         const statsData = data[1] as any;
 
         for (let p of playersData) {
-          const player = new Player(p.player_id, p.player_name);
+          if (p.current_state !== 'deceased') {
+            const player = new Player(p.player_id, p.player_name);
 
-          player.setTeam(p.team, p.team_abbreviation);
-          player.setStars(p);
+            player.setTeam(p.team, p.team_abbreviation);
+            player.setStars(p);
 
-          playersById[player.id] = player;
+            playersById[player.id] = player;
+          }
         }
 
         for (let p of statsData[0].splits) {
           const player = playersById[p.player.id];
-          player.setStats(p.stat);
-          players.push(player);
+
+          if (player) {
+            player.setStats(p.stat);
+            players.push(player);
+          }
         }
 
         return players;
